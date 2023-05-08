@@ -1,0 +1,52 @@
+--Selecting and viewing all values from both tables
+SELECT * FROM users;
+SELECT * FROM progress;
+
+--What are the top 25 schools(.edu domains)
+SELECT email_domain FROM users
+WHERE email_domain > 200
+ORDER BY email_domain DESC
+LIMIT 25;
+
+--how many .edu learners are located in New York
+SELECT COUNT(email_domain) FROM users
+WHERE city = 'New York' AND email_domain LIKE '%.edu';
+
+--how many users are using the Codecademy app
+SELECT COUNT(mobile_app) FROM users
+WHERE mobile_app = 'mobile-user';
+
+--query the sign-up counts for each hour
+SELECT sign_up_at,
+  strftime('%H', sign_up_at), COUNT(user_id)
+FROM users
+GROUP BY 2
+LIMIT 24;
+
+--joining the two tables
+SELECT * FROM users
+JOIN progress
+ ON users.user_id = progress.user_id;
+
+--do different schools (.edu domains) prefer different courses?
+SELECT * FROM users
+CROSS JOIN progress
+WHERE learn_cpp = 'completed' OR learn_cpp = 'started'
+  AND learn_sql = 'completed' OR learn_sql = 'started'
+  AND learn_html = 'completed' OR learn_html = 'started'
+  AND learn_javascript = 'completed' OR learn_javascript = 'started'
+  AND learn_java = 'completed' OR learn_java = 'started'
+GROUP BY email_domain
+LIMIT 50;
+
+--what courses are the New Yorker students taking?
+SELECT * FROM users
+LEFT JOIN progress
+ON users.user_id = progress.user_id
+WHERE city = 'New York';
+
+--what courses are the Chicago students taking?
+SELECT * FROM users
+LEFT JOIN progress
+ON users.user_id = progress.user_id
+WHERE city = 'Chicago';
